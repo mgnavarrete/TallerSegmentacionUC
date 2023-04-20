@@ -14,8 +14,8 @@ El taller consta de los siguientes pasos:
 
 ## Contenido
 
-- La carpeta `presentacion` contiene un archivo PDF con la presentación utilizada durante el taller.
-- La carpeta `codigos` contiene tres códigos: `act1.py`, `act2.py` y `act3.py`. Estos códigos son los que se utilizarán durante la actividad interactiva del taller.
+- La carpeta `presetation` contiene un archivo PDF con la presentación utilizada durante el taller.
+- La carpeta `codes` contiene tres códigos: `act1.py`, `act2.py` y `act3.py`. Estos códigos son los que se utilizarán durante la actividad interactiva del taller.
 - La carpeta `robot` contiene el codigo `robotControl.py` el cual controla al robot.
 
 ¡Disfruta del taller!
