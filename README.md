@@ -14,8 +14,8 @@ El taller consta de los siguientes pasos:
 
 ## Contenido
 
-- La carpeta `presetation` contiene un archivo PDF con la presentación utilizada durante el taller.
+- La carpeta `presentation` contiene un archivo PDF con la presentación utilizada durante el taller.
 - La carpeta `codes` contiene tres códigos: `act1.py`, `act2.py` y `act3.py`. Estos códigos son los que se utilizarán durante la actividad interactiva del taller.
-- La carpeta `robot` contiene el código `robotControl.py` el cual controla al robot autonomamente por medio de la segmentación de circulos y `robotXbox.py` donde se puede controlar al robot con el control de Xbox One.
+- La carpeta `robot` contiene el código `robotControl.py` el cual controla al robot autónomamente por medio de la segmentación de colores y `robotXbox.py` donde se puede controlar al robot con el control de Xbox One.
 
 ¡Disfruta del taller!
