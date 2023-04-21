@@ -14,8 +14,8 @@ El taller consta de los siguientes pasos:
 
 ## Contenido
 
+- La carpeta `arduino` contiene el codigo `NEW_CONTROLLER.ino` que se debe cargar a la arduino UNO, para recibir comandos.
 - La carpeta `presentation` contiene un archivo PDF con la presentación utilizada durante el taller.
 - La carpeta `codes` contiene tres códigos: `act1.py`, `act2.py` y `act3.py`. Estos códigos son los que se utilizarán durante la actividad interactiva del taller.
-- La carpeta `robot` contiene el código `robotControl.py` el cual controla al robot autónomamente por medio de la segmentación de colores y `robotXbox.py` donde se puede controlar al robot con el control de Xbox One.
-
+- La carpeta `robot` contiene tres códigos para controlar al robot: `robotBang.py`, `robotPID.py` y `robotXbox.py`.
 ¡Disfruta del taller!
