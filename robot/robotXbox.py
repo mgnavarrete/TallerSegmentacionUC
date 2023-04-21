@@ -1,55 +1,57 @@
 import serial
 import pygame
 from time import sleep
-from pygame.constants import JOYBUTTONDOWN
+
 
 # Configura el puerto serie
-ser = serial.Serial('COM15', 9600)  # Cambiar 'COM1' por el puerto serie correspondiente
+ser = serial.Serial('COM15', 9600)  # Cambiar 'COM15' por el puerto serie correspondiente
 ser.timeout = 1  # Espera máximo 1 segundo a recibir respuesta
 
-
 pygame.init()
+pygame.joystick.init()
 
 joysticks = []
-
-for i in range(0, pygame.joystick.get_count()):
+for i in range(pygame.joystick.get_count()):
     joysticks.append(pygame.joystick.Joystick(i))
     joysticks[-1].init()
-    
-print(pygame.joystick.Joystick(0).get_name())
-a = True
-# Envia el mensaje
-while a:
+
+def send_to_arduino(value, direction):
+    ser.write(f"{value},{direction}\n".encode('utf-8'))
+
+speed_levels = [130]
+current_speed_index = 0
+running = True
+
+while running:
     for event in pygame.event.get():
 
-        if event.type == 1538:
-            if event.value == (0,0):
-                print("Stoping")
-                ser.write(bytes("S", 'ascii'))  # El mensaje debe ser en formato de bytes
+        if event.type == pygame.JOYAXISMOTION:
+            x_axis = joysticks[0].get_axis(0)
+            y_axis = joysticks[0].get_axis(1)
 
-            if event.value == (0,1):
-                print("Going Forward")
-                ser.write(bytes("F", 'ascii')) 
+            if abs(x_axis) > 0.1 or abs(y_axis) > 0.1:
+                if y_axis <= -0.5 and abs(x_axis) < 0.5:
+                    direction = 'F'  # Adelante
+                elif y_axis >= 0.5 and abs(x_axis) < 0.5:
+                    direction = 'B'  # Atrás
+                elif x_axis >= 0.5 and abs(y_axis) < 0.5:
+                    direction = 'R'  # Derecha
+                elif x_axis <= -0.5 and abs(y_axis) < 0.5:
+                    direction = 'L'  # Izquierda
+                else:
+                    direction = 'S'  # Detener
 
-            if event.value == (0,-1):
-                print("Going Backward")
-                ser.write(bytes("B", 'ascii')) 
+                speed = speed_levels[current_speed_index]
+                send_to_arduino(speed, direction)
+            else:
+                send_to_arduino(0, 'S')
 
-            if event.value == (-1,0):
-                print("Going Left")
-                ser.write(bytes("R", 'ascii')) 
-
-            if event.value == (1,0):
-                print("Going Right")
-                ser.write(bytes("L", 'ascii')) 
-
-        if event.type == JOYBUTTONDOWN:
-            if event.button == 1: #B
+        if event.type == pygame.JOYBUTTONDOWN:
+            if event.button == 1:  # B
                 print("Quiting")
-                a =False
-
-
-     
+                running = False
+            elif event.button == 2:  # X
+                current_speed_index = (current_speed_index + 1) % len(speed_levels)
 
 # Cierra el puerto serie
 ser.close()

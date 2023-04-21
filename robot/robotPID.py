@@ -3,7 +3,7 @@ import cv2
 from cv2 import HoughCircles
 import serial
 from time import sleep
-import math
+from pid import PID
 
 
 nCam = 1 # Valor de la camara, 0 es la del notebook
@@ -58,6 +58,10 @@ def angle_between_vectors(v1, v2):
     dot_product = np.dot(v1, v2)
     v1_magnitude = np.linalg.norm(v1)
     v2_magnitude = np.linalg.norm(v2)
+    
+    if v1_magnitude == 0 or v2_magnitude == 0:
+        return 0.0
+
     cos_angle = dot_product / (v1_magnitude * v2_magnitude)
     angle_rad = np.arccos(cos_angle)
     angle_deg = np.degrees(angle_rad)
@@ -75,9 +79,22 @@ def angle_between_vectors(v1, v2):
     return angle_deg
 
 ser = serial.Serial('COM15', 9600)  # Cambiar 'COM1' por el puerto serie correspondiente
-ser.timeout = 1  # Espera máximo 1 segundo a recibir respuesta
-margen = 10
-			
+
+def send_to_arduino(value, direction):
+    ser.write(f"{value},{direction}\n".encode('utf-8'))
+
+margen = 20
+kp = 1000
+ki = 0
+kd = 0
+
+vmax = 255
+vmin = 130
+
+V = 0
+
+pid = PID(kp, ki, kd)
+		
 while(True):
 
 	ret, frame = cap.read()	
@@ -138,35 +155,46 @@ while(True):
 		x_offset = 50
 		y_offset = 30
 		cv2.putText(frame, info_text, (x_offset, y_offset), font, scale, color, thickness, cv2.LINE_AA)
+		
+		pid.add_error(0 - int(angle))
+		out = pid.output()
 
 
-		if -margen < angle < margen:
+		if -margen < out < margen:
+			
 			print("Going Forward")
-			ser.write(bytes("F", 'ascii')) 
-		
+			send_to_arduino(255, 'F')  # Ajustar la velocidad según la necesidad (0 a 255)
 
-		elif angle < -margen:
+		elif out < -margen:
+			V =  vmin + int(out)
+			if V > vmax:
+				V = vmax
+			if V < vmin:
+				VR = vmin
 			print("Going Left")
-			ser.write(bytes("L", 'ascii'))
-	
-		
-		elif angle > margen:
+			send_to_arduino(V, 'L')  # Ajustar la velocidad según la necesidad (0 a 255)
+
+		elif out > margen:
+			V =  vmin + int(out)
+			if V > vmax:
+				V = vmax
+			if V < vmin:
+				VR = vmin
 			print("Going Right")
-			ser.write(bytes("R", 'ascii'))
-	
+			send_to_arduino(V, 'R')  # Ajustar la velocidad según la necesidad (0 a 255)
 
-
+			
 
 	else:
 		print("No se objetivo")
-		ser.write(bytes("S", 'ascii'))
+		send_to_arduino(0, 'S')
 
 
 	cv2.imshow('frame',frame)
 	cv2.imshow('mask',res)
 		
 	if cv2.waitKey(1) & 0xFF == 27:
-		ser.write(bytes("S", 'ascii'))
+		send_to_arduino(0, 'S')
 
 		break
 

@@ -6,6 +6,7 @@ from cv2 import HoughCircles
 # Se establece el valor de la cámara, 0 es la cámara del notebook
 nCam = 0
 
+
 # Se crea un objeto VideoCapture para capturar video de la cámara especificada
 cap = cv2.VideoCapture(nCam) 
 
@@ -15,8 +16,8 @@ color2_hsv = [74, 131, 140]
 color3_hsv = [ 33, 149, 180]
 
 # Se definen los rangos de colores permitidos para la detección de objetos
-LowerColorError = np.array([-30,-35,-35]) 
-UpperColorError = np.array([30,35,300])  
+LowerColorError = np.array([-15,-35,-35]) 
+UpperColorError = np.array([15,35,35])  
 
 # Se crea una ventana de visualización para la imagen original y la imagen segmentada de los tres colores
 cv2.namedWindow('Imagen Original',  cv2.WINDOW_NORMAL )   
